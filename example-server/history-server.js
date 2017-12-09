@@ -1,14 +1,9 @@
-
-
 var express = require('express');
+var cors = require('cors')
 
 function HistoryServer(spacecraft, port) {
     server = express();
-
-    server.use(function (req, res, next) {
-        res.set('Access-Control-Allow-Origin', '*');
-        next();
-    });
+    server.use(cors())
 
     server.get('/telemetry/:pointId', function (req, res) {
         var start = +req.query.start;
@@ -28,4 +23,3 @@ function HistoryServer(spacecraft, port) {
 }
 
 module.exports = HistoryServer;
-

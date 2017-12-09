@@ -12,4 +12,3 @@ var spacecraft = new Spacecraft();
 var realtimeServer = new RealtimeServer(spacecraft, 8082);
 var historyServer = new HistoryServer(spacecraft, 8081);
 var staticServer = new StaticServer(8080);
-

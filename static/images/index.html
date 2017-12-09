@@ -1,5 +1,13 @@
 <html>
 <body>
-	<img width="500" src="crt_img.png"/>
+	<script>
+		setInterval(function() {
+			console.log("Loading new photo");
+    		var myImageElement = document.getElementById('photo');
+			myImageElement.src = 'crt_img.png?rand=' + Math.random();
+		}, 5000);
+
+	</script>
+	<img id="photo" width="500" src="crt_img.png"/>
 </body>
 </html>

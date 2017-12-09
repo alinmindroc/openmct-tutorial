@@ -38,6 +38,4 @@ RealtimeServer.prototype.handleConnection = function (ws) {
     ws.on('close', unlisten);
 };
 
-
-
 module.exports = RealtimeServer;
