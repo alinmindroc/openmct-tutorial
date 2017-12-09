@@ -3,30 +3,6 @@
     "key": "sc",
     "measurements": [
         {
-            "name": "GPS coordinates",
-            "key": "prop.gps",
-            "values": [
-                {
-                    "key": "value",
-                    "name": "Value",
-                    "units": "list",
-                    "format": "float",
-                    "hints": {
-                        "range": 1
-                    }
-                },
-                {
-                    "key": "utc",
-                    "source": "timestamp",
-                    "name": "Timestamp",
-                    "format": "utc",
-                    "hints": {
-                        "domain": 1
-                    }
-                }
-            ]
-        },
-        {
             "name": "Atmospheric temperature",
             "key": "prop.temp",
             "values": [
