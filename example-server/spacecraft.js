@@ -1,6 +1,9 @@
 /*
  Spacecraft.js simulates a small spacecraft generating telemetry.
 */
+var mysql = require('mysql');
+var util = require('util');
+var datetime = require('node-datetime');
 
 function Spacecraft() {
     this.state = {
@@ -20,8 +23,24 @@ function Spacecraft() {
         this.history[k] = [];
     }, this);
 
+    hostname = "localhost"
+    username = "root"
+    password = ""
+    this.tablename = "spacealliance.telemetry"
+
+    this.con = mysql.createConnection({
+        host: hostname,
+        user: username,
+        password: password
+    });
+
+    this.con.connect(function(err) {
+        if (err) throw err;
+        console.log("Connected successfully to mysql");
+    });
+
     setInterval(function () {
-        this.updateState();
+        this.updateState(this.con);
         this.generateTelemetry();
     }.bind(this), 1000);
 
@@ -29,6 +48,27 @@ function Spacecraft() {
 };
 
 Spacecraft.prototype.updateState = function () {
+    var timestamp = Date.now();
+    var self = this;
+
+    ["prop.temp", "prop.pressure", "prop.alt", "prop.hum", "prop.uv", "prop.ir"].forEach(function(id){
+        sql = util.format("SELECT `timestamp`, `%s` FROM %s where timestamp > '%s'",    
+            id, 
+            self.tablename, 
+            datetime.create(timestamp).format("Y-m-d H:M:S"))
+
+        console.log(sql);
+
+        self.con.query(sql, function (err, result) {
+            if (err) throw err;
+            console.log("Result: " + JSON.stringify(result, null, 4));
+
+            self.state["prop.temp"] = result[0][id];
+        });   
+    })
+
+    // Initial random generation
+    /*
     this.state["prop.temp"] = this.state["prop.temp"] * 0.985
         + Math.random() * 0.25 + Math.sin(Date.now());
 
@@ -46,6 +86,7 @@ Spacecraft.prototype.updateState = function () {
 
     this.state["prop.ir"] = this.state["prop.ir"] * 0.585
         + Math.random() * 0.25 + Math.sin(Date.now());
+    */
 };
 
 /**
@@ -56,8 +97,7 @@ Spacecraft.prototype.generateTelemetry = function () {
     var timestamp = Date.now(), sent = 0;
 
     Object.keys(this.state).forEach(function (id) {
-        var state = { timestamp: timestamp, value: this.state[id], id: id};
-        
+        var state = { timestamp: timestamp, value: this.state[id], id: id};        
         this.notify(state);
         this.history[id].push(state);
         
